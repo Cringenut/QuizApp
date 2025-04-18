@@ -1,9 +1,9 @@
 package com.cringenut.quizapp.controller;
 
 import com.cringenut.quizapp.model.Question;
+import com.cringenut.quizapp.model.Response;
 import com.cringenut.quizapp.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +26,12 @@ public class QuizController {
     @GetMapping("get/{id}")
     public ResponseEntity<List<Question>> getQuizQuestions(@PathVariable Integer id) {
         return quizService.getQuizQuestions(id);
+    }
+
+    @PostMapping("submit/{id}")
+    public ResponseEntity<Integer> submitQuestion(@PathVariable Integer id,
+                                                  @RequestBody List<Response> responses) {
+        return quizService.calculateResult(id, responses);
     }
 
 }

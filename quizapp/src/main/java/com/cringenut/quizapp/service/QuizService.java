@@ -5,7 +5,9 @@ import com.cringenut.quizapp.Dao.QuizDao;
 import com.cringenut.quizapp.model.Question;
 import com.cringenut.quizapp.model.QuestionWrapper;
 import com.cringenut.quizapp.model.Quiz;
+import com.cringenut.quizapp.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -52,5 +54,22 @@ public class QuizService {
         });
 
         return forUserQuestions.isEmpty() ? ResponseEntity.ok(questions) : ResponseEntity.ok(questions);
+    }
+
+    public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
+        Quiz quiz = quizDao.findById(id).get();
+        List<Question> questions = quiz.getQuestions();
+
+        int rightAnswers = 0;
+        int i = 0;
+        for (Response response : responses) {
+            if (response.getResponse().equals(questions.get(i).getRightAnswer())) {
+                rightAnswers++;
+            }
+
+            i++;
+        }
+
+        return new ResponseEntity<>(rightAnswers, HttpStatus.OK);
     }
 }
